@@ -7,6 +7,9 @@ public class AttackTrigger : MonoBehaviour
     public GameObject attackPrefab;
     public TextMeshProUGUI codeText;
 
+    [Header("Attack Settings")]
+    public float heightOffset = 0f; // 각 트리거마다 설정 가능
+
     [Header("Settings")]
     public string attackCode = "M*cr%23";
     public float warningTime = 5f;
@@ -76,13 +79,12 @@ public class AttackTrigger : MonoBehaviour
 
     void SpawnAttack()
     {
-        // 자식의 SpriteRenderer에서 크기 가져오기
         SpriteRenderer spriteRenderer = attackPrefab.GetComponentInChildren<SpriteRenderer>();
-        float boxHeight = spriteRenderer != null ? spriteRenderer.bounds.size.y : 5f; // 없으면 기본값 5
-        Debug.Log(boxHeight);
+        float boxHeight = spriteRenderer != null ? spriteRenderer.bounds.size.y : 5f;
+
         Vector3 pos = new Vector3(
             player.transform.position.x + attackXOffset,
-            player.transform.position.y - (boxHeight / 2f)-5,
+            player.transform.position.y - (boxHeight / 2f) - 5,
             0f
         );
 
@@ -91,6 +93,7 @@ public class AttackTrigger : MonoBehaviour
         Attack script = attack.GetComponent<Attack>();
         if (script != null)
         {
+            script.heightOffset = heightOffset; // 트리거의 값 전달
             script.Initialize(Camera.main.transform.position.y);
         }
     }
